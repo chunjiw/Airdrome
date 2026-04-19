@@ -9,6 +9,7 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        registerPlugin(MediaSessionPlugin.class);
         super.onCreate(savedInstanceState);
         Intent svc = new Intent(this, MediaPlaybackService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
