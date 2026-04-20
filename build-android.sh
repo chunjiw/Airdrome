@@ -18,4 +18,3 @@ cp "$SRC" "$DST" || exit 1
 
 echo
 echo "APK built: $DST"
-ls -lh "$DST"

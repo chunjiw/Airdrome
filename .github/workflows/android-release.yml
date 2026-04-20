@@ -1,6 +1,9 @@
 name: Android Release
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       release:
@@ -54,15 +57,19 @@ jobs:
           path: airdrome-${{ steps.ver.outputs.version }}-debug.apk
 
       - name: Create alpha release
-        if: ${{ inputs.release }}
+        if: ${{ github.event_name == 'push' || inputs.release }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           V="${{ steps.ver.outputs.version }}"
-          TAG="${{ inputs.tag }}"
-          if [ -z "$TAG" ]; then TAG="v${V}-alpha"; fi
+          if [ "${{ github.event_name }}" = "push" ]; then
+            TAG="${{ github.ref_name }}"
+          else
+            TAG="${{ inputs.tag }}"
+            if [ -z "$TAG" ]; then TAG="v${V}-alpha"; fi
+          fi
           gh release create "$TAG" \
-            --title "Capacitor build $TAG" \
-            --notes "Manual alpha build from ${{ github.sha }}" \
+            --title "Capacitor alpha build $TAG" \
+            --notes "Alpha build from ${{ github.sha }}" \
             --prerelease \
             "airdrome-capacitor-${V}-debug.apk"
